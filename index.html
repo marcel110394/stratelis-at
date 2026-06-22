@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stratelis | Strategy. Intelligence. Transformation.</title>
-  <meta name="description" content="Stratelis unterstützt Unternehmen, Organisationen und Entscheidungsträger bei Strategie, KI, Digitalisierung und Transformation." />
+  <meta name="description" content="Stratelis unterstützt Unternehmen, Organisationen und Entscheidungsträger bei Strategie, KI, Digitalisierung, Prozessanalyse und Transformation." />
   <style>
     :root {
       --black: #050505;
@@ -367,6 +367,14 @@
       color: var(--ink);
     }
 
+    .section-intro {
+      max-width: 880px;
+      margin: 0 0 32px;
+      color: #454545;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
     .package-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -374,17 +382,34 @@
     }
 
     .package-grid article {
-      min-height: 210px;
+      min-height: 190px;
       padding: 30px;
       background: #fafafa;
       border: 1px solid #dedede;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .package-grid article:hover {
+      transform: translateY(-3px);
+      border-color: rgba(201,153,50,.55);
+      box-shadow: 0 14px 30px rgba(0,0,0,.08);
+    }
+
+    .package-grid h3 {
+      margin-top: 0;
+    }
+
+    .consulting-note {
+      margin-top: 28px;
+      padding: 18px 22px;
+      background: #111111;
+      color: #ffffff;
+      border-left: 4px solid var(--gold);
+      line-height: 1.6;
     }
 
     .price {
-      margin: 12px 0;
-      color: var(--gold) !important;
-      font-size: 34px !important;
-      font-weight: 900;
+      display: none;
     }
 
     .contact-section {
@@ -427,6 +452,13 @@
     }
 
     .privacy input { width: auto; }
+
+    .form-note {
+      margin: 0;
+      color: #bdbdbd !important;
+      font-size: 12px;
+      line-height: 1.5;
+    }
 
     .footer {
       display: grid;
@@ -670,35 +702,59 @@
     </section>
 
     <section class="packages">
-      <p class="eyebrow">Pakete</p>
-      <h2>Klare Einstiegsangebote</h2>
+      <p class="eyebrow">Leistungsbereiche</p>
+      <h2>Beratung mit Struktur und klarem Ergebnis</h2>
+
+      <p class="section-intro">
+        Stratelis arbeitet nicht mit Standardpreisen von der Stange. Jede Anfrage wird nach Zielsetzung,
+        Umfang und Ausgangslage bewertet. Am Beginn steht ein unverbindliches Erstgespräch, danach folgt
+        ein individuell passender Vorschlag.
+      </p>
 
       <div class="package-grid">
         <article>
-          <h3>KI-Potenzial-Check</h3>
-          <p class="price">ab 399 €</p>
-          <p>Kurzanalyse, Erstgespräch und konkrete Handlungsempfehlungen.</p>
-        </article>
-
-        <article>
-          <h3>Schulung / Workshop</h3>
-          <p class="price">ab 599 €</p>
-          <p>Praxisnahe Einführung in KI, Automatisierung und digitale Werkzeuge.</p>
+          <h3>KI- und Automatisierungspotenziale</h3>
+          <p>Analyse, wo künstliche Intelligenz sinnvoll eingesetzt werden kann und wo sie keinen echten Mehrwert bringt.</p>
         </article>
 
         <article>
           <h3>Strategische Analyse</h3>
-          <p class="price">ab 999 €</p>
-          <p>Tiefere Analyse von Prozessen, blinden Flecken und Optimierungspotenzial.</p>
+          <p>Strukturierte Bewertung von Prozessen, blinden Flecken, Risiken, Chancen und Entscheidungsgrundlagen.</p>
+        </article>
+
+        <article>
+          <h3>Digitalisierung & Systeme</h3>
+          <p>Konzeption digitaler Abläufe, QR-Systeme, einfache Automatisierungen und interne Arbeitsstrukturen.</p>
+        </article>
+
+        <article>
+          <h3>Workshops & Schulungen</h3>
+          <p>Praxisnahe Formate für Teams, Führungskräfte, Organisationen und Entscheidungsträger.</p>
+        </article>
+
+        <article>
+          <h3>Policy & Governance</h3>
+          <p>Strategische Beratung zu Technologie, KI, Digitalisierung und gesellschaftlicher Verantwortung.</p>
+        </article>
+
+        <article>
+          <h3>Umsetzung & Begleitung</h3>
+          <p>Von der ersten Einschätzung bis zur konkreten Umsetzung ausgewählter Maßnahmen.</p>
         </article>
       </div>
+
+      <div class="consulting-note">
+        <strong>Individuelle Anfrage statt Preisliste.</strong>
+        Leistungen werden nach Aufwand, Zielsetzung und Projektumfang angeboten.
+      </div>
     </section>
+
 
     <section id="contact" class="contact-section">
       <div>
         <p class="eyebrow">Kontakt</p>
         <h2>Bereit für den nächsten Schritt?</h2>
-        <p>Schreiben Sie uns für ein unverbindliches Erstgespräch.</p>
+        <p>Schreiben Sie uns für ein unverbindliches Erstgespräch oder eine individuelle Projektanfrage.</p>
       </div>
 
       <form action="mailto:office@stratelis.at" method="post" enctype="text/plain">
@@ -710,6 +766,10 @@
           <input type="checkbox" required />
           Ich stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.
         </label>
+
+        <p class="form-note">
+          Hinweis: Eine Anfrage stellt noch keinen Auftrag dar. Konkrete Leistungen und Angebote werden individuell abgestimmt.
+        </p>
 
         <button class="button gold" type="submit">Anfrage senden</button>
       </form>
