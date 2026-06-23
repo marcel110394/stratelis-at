@@ -327,6 +327,30 @@
       color: #000;
     }
 
+
+    .mic-btn {
+      background: #111;
+      color: #fff;
+      border: 1px solid rgba(0, 255, 119, .35);
+      min-width: 78px;
+    }
+
+    .mic-btn.listening {
+      background: #00ff77;
+      color: #000;
+      box-shadow: 0 0 18px rgba(0,255,119,.45);
+    }
+
+    .mic-hint {
+      position: absolute;
+      bottom: calc(58px + env(safe-area-inset-bottom));
+      right: 18px;
+      font-size: 12px;
+      color: #00ff77;
+      opacity: .85;
+      display: none;
+    }
+
   </style>
 </head>
 
@@ -383,9 +407,11 @@
 
   <div id="chat"></div>
   <div id="typing">UNIT JARVIS-V4: Processing…</div>
+  <div id="micHint" class="mic-hint">MIC ACTIVE · Listening…</div>
 
   <div id="inputBox">
     <input id="input" placeholder="Awaiting next directive, Commander…">
+    <button onclick="startListening()" id="micBtn" class="mic-btn">🎙 Mic</button>
     <button onclick="toggleVoice()" id="voiceBtn" class="voice-btn active">Voice On</button>
     <button onclick="send()">Send</button>
   </div>
@@ -399,6 +425,11 @@
     const input = document.getElementById("input");
     const typing = document.getElementById("typing");
     const bootScreen = document.getElementById("boot");
+    const micBtn = document.getElementById("micBtn");
+    const micHint = document.getElementById("micHint");
+
+    let recognition = null;
+    let isListening = false;
 
     /* Bootscreen ausblenden & Double-Tap-Zoom verhindern */
     setTimeout(() => {
@@ -860,6 +891,80 @@ AMOUNT: ${mah.amount.toFixed(2)} ${mah.currency}`
       return { intent: "fallback_command", params: {} };
     }
 
+
+    /* ---------- VOICE INPUT / MICROPHONE ---------- */
+    function setupSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        ops("MICROPHONE NOT SUPPORTED. Nutze Chrome oder Edge am Desktop/Android. Auf iPhone ist Web Speech Recognition oft eingeschränkt.");
+        return null;
+      }
+
+      const rec = new SpeechRecognition();
+      rec.lang = "de-DE";
+      rec.interimResults = false;
+      rec.continuous = false;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => {
+        isListening = true;
+        if (micBtn) {
+          micBtn.classList.add("listening");
+          micBtn.textContent = "Listening";
+        }
+        if (micHint) micHint.style.display = "block";
+      };
+
+      rec.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        input.value = transcript;
+        ops("VOICE COMMAND RECEIVED: " + transcript, 120);
+        setTimeout(() => send(), 350);
+      };
+
+      rec.onerror = (event) => {
+        ops("MIC ERROR: " + event.error + ". Bitte Mikrofonfreigabe prüfen.");
+      };
+
+      rec.onend = () => {
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove("listening");
+          micBtn.textContent = "🎙 Mic";
+        }
+        if (micHint) micHint.style.display = "none";
+      };
+
+      return rec;
+    }
+
+    function startListening() {
+      if (!recognition) {
+        recognition = setupSpeechRecognition();
+      }
+
+      if (!recognition) return;
+
+      if (isListening) {
+        recognition.stop();
+        return;
+      }
+
+      try {
+        recognition.start();
+      } catch (e) {
+        ops("MIC START ERROR. Bitte kurz warten und erneut drücken.");
+      }
+    }
+
+    function stopSpeaking() {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+      }
+    }
+
+
     /* ---------- LOGIN + SERVER API ---------- */
     const API_BASE_URL = "https://api.stratelis.at/api";
 
@@ -1024,7 +1129,7 @@ READY FOR NEXT DIRECTIVE`
 
     setTimeout(() => {
       ops(
-        "HINT: z. B. 'Lege Kunde Trafik Steinweg KDN 4711 4050 Traun an', 'Umsatz 1500 für Tesla', 'Termin 21.11.2025 14:00 Meeting mit Kunde X', 'Buche 2 Stunden für ACME zum Satz 140' oder einfach 'Scanne'."
+        "HINT: z. B. 'Lege Kunde Trafik Steinweg KDN 4711 4050 Traun an', 'Umsatz 1500 für Tesla', 'Termin 21.11.2025 14:00 Meeting mit Kunde X', 'Buche 2 Stunden für ACME zum Satz 140' oder einfach 'Scanne'. Mit 🎙 Mic kannst du den Befehl sprechen."
       );
     }, 2000);
   </script>
