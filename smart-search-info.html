@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stratelis OS · OPS Hub</title>
+<style>
+:root{--bg:#050505;--panel:#0d0d0d;--gold:#c99732;--gold2:#f0c860;--txt:#fff;--muted:#bdbdbd}
+*{box-sizing:border-box} body{margin:0;background:
+radial-gradient(circle at 70% 10%,rgba(201,153,50,.22),transparent 28%),
+linear-gradient(135deg,#050505,#0b0b0b 55%,#050505);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;min-height:100vh}
+header{padding:28px 5%;border-bottom:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;gap:18px;align-items:center;background:rgba(0,0,0,.45);position:sticky;top:0;backdrop-filter:blur(8px);z-index:10}
+.brand{letter-spacing:5px;font-weight:900} .brand span{color:var(--gold2)} nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:13px;text-transform:uppercase;font-weight:800}
+main{padding:48px 5% 70px;max-width:1320px;margin:auto} h1{font-size:clamp(38px,6vw,82px);line-height:.95;margin:0 0 18px;letter-spacing:3px} .lead{max-width:850px;color:#ddd;line-height:1.7;font-size:18px}
+.warning{margin:26px 0 34px;padding:18px 20px;border-left:4px solid var(--gold);background:#101010;color:#e8e8e8;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.card{display:block;text-decoration:none;color:#fff;background:rgba(13,13,13,.92);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px;min-height:190px;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:rgba(240,200,96,.65);box-shadow:0 18px 36px rgba(0,0,0,.28)}
+.card h3{margin:16px 0 10px;font-size:22px} .card p{color:var(--muted);line-height:1.6;margin:0} .tag{font-size:11px;letter-spacing:2px;color:#050505;background:linear-gradient(135deg,#b47b25,#f0c860);padding:6px 9px;border-radius:999px;font-weight:900}
+footer{padding:28px 5%;border-top:1px solid rgba(255,255,255,.12);color:#aaa}
+@media(max-width:900px){.grid{grid-template-columns:1fr} header{align-items:flex-start;flex-direction:column} nav a{margin:0 16px 0 0;display:inline-block;padding:8px 0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">STRATELIS <span>OS</span></div>
+  <nav><a href="../index.html">Website</a><a href="jarvis.html">Jarvis</a><a href="dashboard.html">Dashboard</a><a href="smart-search-info.html">Smart Search</a></nav>
+</header>
+<main>
+  <h1>OPS HUB</h1>
+  <p class="lead">Interner Arbeitsbereich für Jarvis, QR-Systeme, Kundenmodule, Rechnungen, Dashboard, Suche und Smart Search. Öffentliche Marke vorne, Betriebssystem hinten.</p>
+  <div class="warning"><strong>Wichtig:</strong> Dieser Bereich ist auf GitHub Pages technisch öffentlich. Für echte Kundendaten später Server, Login und Datenbank verwenden.</div>
+  <section class="grid">
+      <a class="card" href="jarvis.html">
+        <span class="tag">CORE</span>
+        <h3>Jarvis Core</h3>
+        <p>Sprachfähige Kommandokonsole mit LocalStorage-Backoffice und API-Vorbereitung.</p>
+      </a>
+      <a class="card" href="dashboard.html">
+        <span class="tag">OPS</span>
+        <h3>Dashboard</h3>
+        <p>Missions-KPIs, Umsatz, Kunden, Stunden, Lager und Alerts.</p>
+      </a>
+      <a class="card" href="smart-search-info.html">
+        <span class="tag">SERVER</span>
+        <h3>Smart Search</h3>
+        <p>Backend-gestützte Datei-, Workflow- und Wissenssuche. Braucht Server.</p>
+      </a>
+      <a class="card" href="qr-suite.html">
+        <span class="tag">QR</span>
+        <h3>QR Suite</h3>
+        <p>Offline QR-Code Generator für Links, WLAN, Kontakt und freie Texte.</p>
+      </a>
+      <a class="card" href="qr-linkhub.html">
+        <span class="tag">QR</span>
+        <h3>QR LinkHub</h3>
+        <p>Erzeugt Kunden-LinkHub-Seiten mit Maps, Bewertung, Social und WhatsApp.</p>
+      </a>
+      <a class="card" href="social-qr.html">
+        <span class="tag">SOCIAL</span>
+        <h3>Social QR</h3>
+        <p>Schneller Generator für Social Links wie Snapchat, Instagram und WhatsApp.</p>
+      </a>
+      <a class="card" href="multi-social-qr.html">
+        <span class="tag">SOCIAL</span>
+        <h3>Multi Social QR</h3>
+        <p>Mehrere Social-QRs und fertige index.html erzeugen.</p>
+      </a>
+      <a class="card" href="kundenanlegen.html">
+        <span class="tag">CRM</span>
+        <h3>Kunden</h3>
+        <p>Kunden anlegen und lokal im Browser verwalten.</p>
+      </a>
+      <a class="card" href="angebot.html">
+        <span class="tag">DOC</span>
+        <h3>Angebote</h3>
+        <p>Angebotsgenerator / Offer Modul.</p>
+      </a>
+      <a class="card" href="rechnung.html">
+        <span class="tag">DOC</span>
+        <h3>Rechnungen</h3>
+        <p>Rechnungsgenerator.</p>
+      </a>
+      <a class="card" href="mahnwesen.html">
+        <span class="tag">FIN</span>
+        <h3>Mahnwesen</h3>
+        <p>Mahnungen und offene Posten.</p>
+      </a>
+      <a class="card" href="lagerbestand.html">
+        <span class="tag">INV</span>
+        <h3>Lager</h3>
+        <p>Lagerbestand mit optionalem QR-/Barcode-Scanner.</p>
+      </a>
+      <a class="card" href="search.html">
+        <span class="tag">SEARCH</span>
+        <h3>Globale Suche</h3>
+        <p>Suche über lokale Jarvis-Datenmodule.</p>
+      </a>
+      <a class="card" href="logbuch.html">
+        <span class="tag">LOG</span>
+        <h3>Logbuch</h3>
+        <p>System- und Arbeitslogbuch.</p>
+      </a>
+      <a class="card" href="pricing.html">
+        <span class="tag">INTERN</span>
+        <h3>Pricing Intern</h3>
+        <p>Interne Stundensätze/Zuschläge, nicht öffentlich.</p>
+      </a>
+  </section>
+</main>
+<footer>© 2026 Stratelis · Internal OPS Build · Demo/Prototype Layer</footer>
+</body>
+</html>

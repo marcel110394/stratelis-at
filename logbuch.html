@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <title>JARVIS-V4 · Lagerbestand · OPS-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <style>
+    /* ============================================
+     DARKOPS LAGERBESTAND MODULE
+     ============================================ */
+    :root {
+      --color-bg: #000;
+      --color-fg: #fff;
+      --color-dark-element: #0a0a0a;
+      --color-border-subtle: rgba(255, 255, 255, 0.12);
+      --color-border-strong: rgba(255, 255, 255, 0.25);
+      --color-accent: #ffffff;
+      --color-danger: #b00020;
+      --color-pill: rgba(255, 255, 255, 0.3);
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      color: var(--color-fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      height: 100%;
+    }
+
+    @supports (height: 100dvh) {
+      body {
+        height: 100dvh;
+      }
+    }
+
+    /* HEADER */
+    header {
+      padding: 14px 16px;
+      padding-top: calc(14px + env(safe-area-inset-top));
+      border-bottom: 1px solid var(--color-border-subtle);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--color-bg);
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-sub {
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      color: #aaa;
+    }
+
+    .btn-ghost-header {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      font-size: 11px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--color-fg);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* LAYOUT */
+    main {
+      padding: 12px 14px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    }
+
+    h2 {
+      margin: 8px 0 4px;
+      font-size: 13px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .info {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-dark-element);
+      color: var(--color-fg);
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+
+    form input::placeholder,
+    form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    form textarea {
+      grid-column: 1 / span 2;
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: #000;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-fg);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-danger {
+      background: var(--color-danger);
+      color: #fff;
+    }
+
+    .actions {
+      grid-column: 1 / span 2;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .actions .btn-danger {
+      margin-left: auto;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      margin-bottom: 4px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .list-header input {
+      max-width: 220px;
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-dark-element);
+      color: var(--color-fg);
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--color-pill);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .list {
+      border-top: 1px solid var(--color-border-subtle);
+      margin-top: 4px;
+    }
+
+    .entry {
+      padding: 10px 6px;
+      border-bottom: 1px solid var(--color-border-subtle);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .entry-main {
+      max-width: 70%;
+    }
+
+    .entry-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .entry-meta {
+      font-size: 12px;
+      color: #bbb;
+      line-height: 1.4;
+    }
+
+    .entry-notes {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .entry-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+    }
+
+    .entry-buttons button {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .stock-ok {
+      color: #7cf57c;
+    }
+
+    .stock-low {
+      color: #ffd966;
+    }
+
+    .stock-crit {
+      color: #ff6b6b;
+    }
+
+    .empty {
+      font-size: 12px;
+      color: #777;
+      padding: 8px 0;
+    }
+
+    .badge-editmode {
+      font-size: 11px;
+      color: #ffd966;
+    }
+
+    /* Scanner Box */
+    #scannerBox {
+      margin-bottom: 12px;
+    }
+
+    #qr-reader {
+      margin-top: 8px;
+      max-width: 320px;
+    }
+
+    entry-photo {
+      width: 84px;
+      height: 84px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--color-border-subtle);
+      background: #111;
+      flex-shrink: 0;
+    }
+
+    .entry-left {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      max-width: 75%;
+    }
+
+    .reorder-entry {
+      padding: 10px 6px;
+      border-bottom: 1px solid var(--color-border-subtle);
+      font-size: 13px;
+    }
+
+    .reorder-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-title">
+      <span>JARVIS-V4 · LAGERBESTAND</span>
+      <span class="header-sub">OPS-01 · INVENTORY CONTROL</span>
+    </div>
+    <!-- zurück zum Jarvis-Hauptmodul -->
+    <button class="btn-ghost-header" onclick="location.href='jarvis.html'">Zurück</button>
+  </header>
+
+  <main>
+    <h2>Artikelverwaltung</h2>
+
+    <!-- Scanner-Hinweis + Button -->
+    <div class="info">
+      Optional: Barcode / QR mit Kamera scannen – Ergebnis landet im Feld „SKU“.
+    </div>
+    <div id="scannerBox">
+      <button type="button" class="btn-ghost" onclick="toggleScanner()">Scanner starten / stoppen</button>
+      <div id="qr-reader"></div>
+    </div>
+
+    <div class="info" id="editInfo">
+      Neuer Artikel – Felder ausfüllen und speichern.<br>
+      Tipp: SKU z. B. „ESP32-DEVKIT“, Kategorie z. B. „Elektronik“.
+    </div>
+
+    <form id="form">
+      <input type="text" id="name" placeholder="Artikelname*" required>
+      <input type="text" id="sku" placeholder="SKU / Artikelnummer">
+      <input type="text" id="category" placeholder="Kategorie (z.B. Elektronik)">
+      <input type="number" id="stock" placeholder="Bestand" step="1" min="0">
+      <input type="number" id="minStock" placeholder="Mindestbestand" step="1" min="0">
+      <input type="number" id="buyPrice" placeholder="Einkaufspreis (€)" step="0.01" min="0">
+      <input type="number" id="sellPrice" placeholder="Verkaufspreis (€)" step="0.01" min="0">
+      <textarea id="notes" placeholder="Notizen (Lieferant, Besonderheiten, etc.)"></textarea>
+      <div class="actions">
+        <button type="submit" class="btn-primary">Speichern</button>
+        <button type="button" class="btn-ghost" onclick="resetForm()">Reset</button>
+        <button type="button" class="btn-danger" onclick="deleteAll()">Alles löschen</button>
+      </div>
+    </form>
+
+    <h2>Lagerübersicht</h2>
+    <div class="list-header">
+      <div class="pill" id="summaryPill">0 Artikel · Gesamtbestand 0</div>
+      <input type="text" id="filter" placeholder="Suche (Name, SKU, Kategorie)" oninput="renderList()">
+    </div>
+    <div id="list" class="list"></div>
+    <h2Nachbestellung< /h2>
+      </h2Nachbestellung>
+      <div class="info"> Artikel unter Mindestbestand werden hier automatisch gesammelt.</div>
+      <div id="reorderList" class="list"></div>
+      </div>
+
+  </main>
+
+  <!-- QR / Barcode Scanner Bibliothek (Kamera) -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <script>
+    let editId = null;
+
+    let scannerActive = false;
+    let html5QrcodeScannerInstance = null;
+
+    function uid() {
+      return "id-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function loadInventory() {
+      return JSON.parse(localStorage.getItem("inventory") || "[]");
+    }
+
+    function saveInventory(list) {
+      localStorage.setItem("inventory", JSON.stringify(list));
+    }
+
+    function loadReorders() {
+      return JSON.parse(localStorage.getItem("inventory_reorders") || "[]");
+    }
+
+    function saveReorders(list) {
+      localStorage.setItem("inventory_reorders", JSON.stringify(list));
+    }
+
+    function findItemById(id) {
+      return loadInventory().find(x => x.id === id);
+    }
+
+    function toggleScanner() {
+      const target = document.getElementById("qr-reader");
+
+      if (scannerActive) {
+        if (html5QrcodeScannerInstance) {
+          html5QrcodeScannerInstance.clear().catch(err => console.error(err));
+          html5QrcodeScannerInstance = null;
+        }
+        if (target) target.innerHTML = "";
+        scannerActive = false;
+        return;
+      }
+
+      if (!window.Html5QrcodeScanner) {
+        alert("Scanner-Bibliothek nicht geladen. Internetverbindung + https nötig.");
+        return;
+      }
+
+      const onScanSuccess = (decodedText) => {
+        document.getElementById("sku").value = decodedText;
+        const stockEl = document.getElementById("stock");
+        if (stockEl) stockEl.focus();
+        toggleScanner();
+      };
+
+      html5QrcodeScannerInstance = new Html5QrcodeScanner(
+        "qr-reader",
+        { fps: 10, qrbox: 200 },
+        false
+      );
+      html5QrcodeScannerInstance.render(onScanSuccess);
+      scannerActive = true;
+    }
+
+    function resetForm() {
+      document.getElementById("form").reset();
+      editId = null;
+      document.getElementById("editInfo").innerHTML =
+        'Neuer Artikel – Felder ausfüllen und speichern.<br>' +
+        'Tipp: SKU z. B. „ESP32-DEVKIT“, Kategorie z. B. „Elektronik“.';
+    }
+
+    function deleteAll() {
+      if (!confirm("Wirklich alle Lagerdaten löschen?")) return;
+      localStorage.removeItem("inventory");
+      localStorage.removeItem("inventory_reorders");
+      renderList();
+      renderReorders();
+      resetForm();
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          resolve("");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function ensureReorder(item) {
+      const stock = Number(item.stock) || 0;
+      const min = Number(item.minStock) || 0;
+      if (min <= 0) return;
+
+      let reorders = loadReorders();
+      const existing = reorders.find(x => x.itemId === item.id);
+
+      if (stock <= min) {
+        if (!existing) {
+          reorders.push({
+            id: uid(),
+            itemId: item.id,
+            name: item.name,
+            sku: item.sku || "",
+            category: item.category || "",
+            currentStock: stock,
+            minStock: min,
+            suggestedQty: Math.max((min * 2) - stock, 1),
+            createdAt: new Date().toISOString(),
+            status: "offen"
+          });
+          saveReorders(reorders);
+
+          // Optional: Auto-Bestelltrigger
+          autoOrder(item, Math.max((min * 2) - stock, 1));
+        } else {
+          existing.currentStock = stock;
+          existing.minStock = min;
+          existing.suggestedQty = Math.max((min * 2) - stock, 1);
+          saveReorders(reorders);
+        }
+      } else {
+        reorders = reorders.filter(x => x.itemId !== item.id);
+        saveReorders(reorders);
+      }
+    }
+
+    function autoOrder(item, qty) {
+      // Demo / lokal:
+      // Hier könntest du später fetch(...) auf deinen Server/Webhook machen.
+      console.log("AUTO-ORDER:", {
+        name: item.name,
+        sku: item.sku,
+        qty
+      });
+
+      // Beispiel Webhook:
+      /*
+      fetch("https://dein-server.at/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: item.name,
+          sku: item.sku,
+          qty: qty
+        })
+      }).catch(err => console.error("Auto-Order Fehler:", err));
+      */
+    }
+
+    function renderList() {
+      const listEl = document.getElementById("list");
+      const filterVal = (document.getElementById("filter").value || "").toLowerCase();
+      const data = [...loadInventory()].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+      const totalItems = data.length;
+      const totalStock = data.reduce((s, x) => s + (Number(x.stock) || 0), 0);
+
+      document.getElementById("summaryPill").textContent =
+        `${totalItems} Artikel · Gesamtbestand ${totalStock}`;
+
+      if (data.length === 0) {
+        listEl.innerHTML = '<div class="empty">Keine Artikel im Lager erfasst.</div>';
+        return;
+      }
+
+      const filtered = data.filter(t => {
+        const haystack = `${t.name || ""} ${t.sku || ""} ${t.category || ""}`.toLowerCase();
+        return !filterVal || haystack.includes(filterVal);
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = '<div class="empty">Keine Artikel entsprechen dem Filter.</div>';
+        return;
+      }
+
+      listEl.innerHTML = "";
+
+      filtered.forEach((t) => {
+        const stock = Number(t.stock) || 0;
+        const min = Number(t.minStock) || 0;
+
+        let stockClass = "stock-ok";
+        let stockLabel = "OK";
+
+        if (min > 0 && stock <= min && stock > 0) {
+          stockClass = "stock-low";
+          stockLabel = "Niedrig";
+        }
+        if (min > 0 && stock <= 0) {
+          stockClass = "stock-crit";
+          stockLabel = "Leer";
+        }
+
+        const div = document.createElement("div");
+        div.className = "entry";
+
+        div.innerHTML = `
+          <div class="entry-left">
+            ${t.photo ? `<img class="entry-photo" src="${t.photo}" alt="Artikelbild">` : ''}
+            <div class="entry-main">
+              <div class="entry-title">${t.name || "-"}</div>
+              <div class="entry-meta">
+                SKU: ${t.sku || "-"} · Kat.: ${t.category || "-"}<br>
+                Bestand: <span class="${stockClass}">${stock}</span> (min. ${min || 0}) ·
+                EK: ${t.buyPrice ? Number(t.buyPrice).toFixed(2) + " €" : "-"} ·
+                VK: ${t.sellPrice ? Number(t.sellPrice).toFixed(2) + " €" : "-"}<br>
+                Status: <span class="${stockClass}">${stockLabel}</span>
+              </div>
+              ${t.notes ? `<div class="entry-notes">${t.notes}</div>` : ""}
+            </div>
+          </div>
+          <div class="entry-buttons">
+            <button class="btn-ghost" onclick="adjustStock('${t.id}', 1)">+1</button>
+            <button class="btn-ghost" onclick="adjustStock('${t.id}', -1)">-1</button>
+            <button class="btn-ghost" onclick="promptAdjust('${t.id}', true)">Zugang</button>
+            <button class="btn-ghost" onclick="promptAdjust('${t.id}', false)">Abgang</button>
+            <button class="btn-ghost" onclick="editItem('${t.id}')">Bearbeiten</button>
+            <button class="btn-danger" onclick="deleteItem('${t.id}')">Löschen</button>
+          </div>
+        `;
+
+        listEl.appendChild(div);
+      });
+    }
+
+    function renderReorders() {
+      const el = document.getElementById("reorderList");
+      if (!el) return;
+
+      const reorders = loadReorders();
+
+      if (!reorders.length) {
+        el.innerHTML = '<div class="empty">Keine offenen Nachbestellungen.</div>';
+        return;
+      }
+
+      el.innerHTML = "";
+
+      reorders.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "reorder-entry";
+        div.innerHTML = `
+          <strong>${r.name}</strong><br>
+          SKU: ${r.sku || "-"} · Kat.: ${r.category || "-"}<br>
+          Aktuell: ${r.currentStock} · Mindestbestand: ${r.minStock} · Vorschlag: ${r.suggestedQty}<br>
+          Status: ${r.status}
+          <div class="reorder-actions">
+            <button class="btn-ghost" onclick="markReorderDone('${r.id}')">Als bestellt markieren</button>
+            <button class="btn-ghost" onclick="sendOrderMail('${r.id}')">Bestellmail</button>
+            <button class="btn-danger" onclick="removeReorder('${r.id}')">Entfernen</button>
+          </div>
+        `;
+        el.appendChild(div);
+      });
+    }
+
+    function markReorderDone(reorderId) {
+      const reorders = loadReorders();
+      const r = reorders.find(x => x.id === reorderId);
+      if (!r) return;
+      r.status = "bestellt";
+      saveReorders(reorders);
+      renderReorders();
+    }
+
+    function removeReorder(reorderId) {
+      const reorders = loadReorders().filter(x => x.id !== reorderId);
+      saveReorders(reorders);
+      renderReorders();
+    }
+
+    function sendOrderMail(reorderId) {
+      const reorders = loadReorders();
+      const r = reorders.find(x => x.id === reorderId);
+      if (!r) return;
+
+      const subject = encodeURIComponent(`Nachbestellung: ${r.name}`);
+      const body = encodeURIComponent(
+        `Hallo,\n\nbitte folgende Position nachbestellen:\n\n` +
+        `Artikel: ${r.name}\n` +
+        `SKU: ${r.sku}\n` +
+        `Kategorie: ${r.category}\n` +
+        `Aktueller Bestand: ${r.currentStock}\n` +
+        `Mindestbestand: ${r.minStock}\n` +
+        `Bestellmenge: ${r.suggestedQty}\n\nDanke.`
+      );
+
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function adjustStock(id, delta) {
+      const data = loadInventory();
+      const item = data.find(x => x.id === id);
+      if (!item) return;
+
+      let current = Number(item.stock) || 0;
+      current += delta;
+      if (current < 0) current = 0;
+
+      item.stock = current;
+      item.updated = new Date().toISOString();
+
+      saveInventory(data);
+      ensureReorder(item);
+      renderList();
+      renderReorders();
+    }
+
+    function promptAdjust(id, isIn) {
+      const amountStr = prompt(isIn ? "Zugang – Menge hinzufügen:" : "Abgang – Menge abziehen:");
+      if (!amountStr) return;
+
+      const val = parseInt(amountStr, 10);
+      if (isNaN(val) || val === 0) return;
+
+      adjustStock(id, isIn ? val : -val);
+    }
+
+    function editItem(id) {
+      const data = loadInventory();
+      const t = data.find(x => x.id === id);
+      if (!t) return;
+
+      editId = id;
+
+      document.getElementById("name").value = t.name || "";
+      document.getElementById("sku").value = t.sku || "";
+      document.getElementById("category").value = t.category || "";
+      document.getElementById("stock").value = t.stock || 0;
+      document.getElementById("minStock").value = t.minStock || 0;
+      document.getElementById("buyPrice").value = t.buyPrice || "";
+      document.getElementById("sellPrice").value = t.sellPrice || "";
+      document.getElementById("notes").value = t.notes || "";
+
+      document.getElementById("editInfo").innerHTML =
+        `<span class="badge-editmode">Bearbeitungsmodus</span><br>` +
+        `Artikel „${t.name || "-"}“ wird bearbeitet. Speichern überschreibt den Datensatz.`;
+    }
+
+    function deleteItem(id) {
+      const data = loadInventory();
+      const t = data.find(x => x.id === id);
+      if (!t) return;
+
+      if (!confirm(`Artikel „${t.name || "-"}“ wirklich löschen?`)) return;
+
+      const newData = data.filter(x => x.id !== id);
+      saveInventory(newData);
+
+      const reorders = loadReorders().filter(x => x.itemId !== id);
+      saveReorders(reorders);
+
+      renderList();
+      renderReorders();
+      resetForm();
+    }
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const sku = document.getElementById("sku").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const stock = Number(document.getElementById("stock").value || 0);
+      const minStock = Number(document.getElementById("minStock").value || 0);
+      const buyPrice = document.getElementById("buyPrice").value;
+      const sellPrice = document.getElementById("sellPrice").value;
+      const notes = document.getElementById("notes").value.trim();
+      const photoFile = document.getElementById("photo").files[0];
+
+      if (!name) return;
+
+      const data = loadInventory();
+      let existing = null;
+
+      if (editId !== null) {
+        existing = data.find(x => x.id === editId);
+      }
+
+      const photoBase64 = photoFile
+        ? await fileToBase64(photoFile)
+        : (existing?.photo || "");
+
+      const item = {
+        id: existing?.id || uid(),
+        name,
+        sku,
+        category,
+        stock,
+        minStock,
+        buyPrice,
+        sellPrice,
+        notes,
+        photo: photoBase64,
+        updated: new Date().toISOString()
+      };
+
+      if (editId === null) {
+        data.push(item);
+      } else {
+        const index = data.findIndex(x => x.id === editId);
+        if (index !== -1) data[index] = item;
+      }
+
+      saveInventory(data);
+      ensureReorder(item);
+      renderList();
+      renderReorders();
+      resetForm();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const preloadMap = {
+        name: "tempItemName",
+        sku: "tempItemSku",
+        category: "tempItemCategory",
+        stock: "tempItemStock",
+        minStock: "tempItemMinStock",
+        buyPrice: "tempItemBuyPrice",
+        sellPrice: "tempItemSellPrice",
+        notes: "tempItemNotes"
+      };
+
+      let hasPre = false;
+      for (const fieldId in preloadMap) {
+        const key = preloadMap[fieldId];
+        const val = localStorage.getItem(key);
+        if (val !== null) {
+          const el = document.getElementById(fieldId);
+          if (el) el.value = val;
+          localStorage.removeItem(key);
+          hasPre = true;
+        }
+      }
+
+      if (hasPre) {
+        document.getElementById("editInfo").innerHTML =
+          'Daten aus JARVIS-Befehl übernommen – prüfen und speichern.<br>' +
+          'Optional kannst du den Artikel jetzt einscannen und den Bestand anpassen.';
+      }
+
+      renderList();
+      renderReorders();
+    });
+  </script>
+</body>
+
+</html>
