@@ -1,401 +1,661 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aichmayr Technology </title>
+<html lang="de">
 
-<style>
-:root { --pad: 14px; --border: 1px solid #ccc; --maxw: 980px; }
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#f6f7f9; }
-header { background:#111; color:#fff; padding: 14px 20px; }
-header h1 { margin:0; font-size: 18px; }
-main { max-width: var(--maxw); margin: 20px auto; padding: 0 12px 40px; }
-.card { background:#fff; border: var(--border); border-radius: 10px; padding: var(--pad); box-shadow: 0 2px 6px rgba(0,0,0,.04); }
-.grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 10px; }
-.col-12{grid-column: span 12;}
-.col-6{grid-column: span 6;}
-.col-4{grid-column: span 4;}
-.col-3{grid-column: span 3;}
-label { display:block; font-size: 12px; color:#444; margin-bottom: 4px; }
-input, textarea, select { width: 100%; padding:10px; border: var(--border); border-radius:8px; font-size:14px; }
-textarea { min-height: 70px; }
-table { width:100%; border-collapse: collapse; margin-top:10px; font-size: 14px; }
-th, td { border: var(--border); padding:8px; text-align:left; vertical-align: top;}
-tfoot td { font-weight: 600; }
-button { padding:10px 14px; border-radius:8px; border:1px solid #111; background:#111; color:#fff; cursor:pointer; }
-button.secondary{ background:#fff; color:#111; }
-.actions { display:flex; gap:10px; margin:14px 0; flex-wrap:wrap; }
-.preview { background:#fff; padding: var(--pad); border: var(--border); border-radius: 10px; }
-code { font-family: ui-monospace; background:#f3f4f6; padding:2px 5px; border-radius:4px; }
-@media print {
-  header, .controls { display:none !important; }
-  body { background:#fff; }
-  main { margin:0; padding:0; max-width:100%; }
-  .preview { border:none; box-shadow:none; }
-}
-</style>
+<head>
+  <meta charset="UTF-8">
+  <title>Jarvis · Kundenverwaltung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 14px 16px;
+      padding-top: calc(14px + env(safe-area-inset-top));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 12px 14px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    }
+
+    h2 {
+      margin: 10px 0 4px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .info {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: #080808;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    form textarea {
+      grid-column: 1 / span 2;
+      min-height: 60px;
+    }
+
+    label {
+      font-size: 11px;
+      color: #ccc;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .field-full {
+      grid-column: 1 / span 2;
+    }
+
+    .actions {
+      grid-column: 1 / span 2;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+    }
+
+    .btn-danger {
+      background: #b00020;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #111;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .status-ok {
+      color: #7cf57c;
+    }
+
+    .status-warn {
+      color: #ffd966;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .list-filter {
+      max-width: 220px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: #080808;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .list {
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .entry {
+      padding: 8px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .entry-main {
+      max-width: 70%;
+    }
+
+    .entry-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .entry-meta {
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    .entry-notes {
+      font-size: 12px;
+      color: #ddd;
+      margin-top: 3px;
+    }
+
+    .entry-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+    }
+
+    .entry-buttons button {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .empty {
+      font-size: 12px;
+      color: #777;
+      padding: 6px 0;
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
-<h1>Aichmayr Technology · Invoice Generator</h1>
-</header>
-
-<main>
-
-<section class="card controls">
-<div class="grid">
-
-  <div class="col-6">
-    <label>Issuer (Name / Company)</label>
-    <input id="issuer" value="Marcel Aichmayr · Aichmayr Technology">
-  </div>
-
-  <div class="col-6">
-    <label>Issuer Address</label>
-    <input id="issuerAddr" value="Hammerweg 30, 4050 Traun, Austria">
-  </div>
-
-  <div class="col-4">
-    <label>IBAN</label>
-    <input id="iban" value="AT89 3400 0000 0619 2504">
-  </div>
-
-  <div class="col-4">
-    <label>BIC (optional)</label>
-    <input id="bic" value="BIC RZOOAT2L">
-  </div>
-
-  <div class="col-4">
-    <label>VAT ID / Tax Number (optional)</label>
-    <input id="uid">
-  </div>
-
-  <div class="col-6">
-    <label>Contact (E-mail / Phone)</label>
-    <input id="contact" value="aichmayr.tech@outlook.com · Phone: +43664 4644439">
-  </div>
-
-  <div class="col-6">
-    <label>Website</label>
-    <input id="web" placeholder="https://aichmayr-technology.com">
-  </div>
-
-  <div class="col-6">
-    <label>Client / Recipient</label>
-    <input id="client" placeholder="Company / Name">
-  </div>
-
-  <div class="col-6">
-    <label>Client Address</label>
-    <input id="clientAddr" placeholder="Street, ZIP, City, Country">
-  </div>
-
-  <div class="col-3">
-    <label>Document Type</label>
-    <select id="doctype">
-      <option>Invoice</option>
-      <option>Receipt</option>
-      <option>Credit Note</option>
-    </select>
-  </div>
-
-  <div class="col-3">
-    <label>Document No.</label>
-    <input id="docno">
-  </div>
-
-  <div class="col-3">
-    <label>Date</label>
-    <input id="date" type="date">
-  </div>
-
-  <div class="col-3">
-    <label>Payment Terms (Days)</label>
-    <input id="dueDays" type="number" value="14">
-  </div>
-
-  <div class="col-3">
-    <label>Due Date</label>
-    <input id="dueDate" type="date">
-  </div>
-
-  <div class="col-3">
-    <label>Service Period</label>
-    <input id="period" placeholder="e.g. 11/2025">
-  </div>
-
-  <div class="col-12">
-    <label>Line Items</label>
-    <table id="items">
-      <thead>
-        <tr>
-          <th>Description</th><th>Qty</th><th>Unit</th><th>Unit Price (€)</th><th>Net (€)</th><th></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="actions">
-      <button id="add">+ Item</button>
-      <button class="secondary" id="clear">Clear All</button>
+  <header>
+    <h1 style="margin:0;font-size:18px;">Aichmayr Technology · Kundenverwaltung</h1>
+    <div style="display:flex;gap:8px;">
+      <button onclick="location.href='jarvis_v4_darkops_mobile.html'" class="btn-ghost">
+        JARVIS Home
+      </button>
     </div>
-  </div>
+  </header>
 
-  <div class="col-3">
-    <label>VAT Rate</label>
-    <select id="vat">
-      <option value="0" selected>0 % (Small Business Regulation ≤ 13,000 €)</option>
-      <option value="10">10 %</option>
-      <option value="20">20 % (AT)</option>
-    </select>
-  </div>
+  <main>
+    <h2>Kunde anlegen / bearbeiten</h2>
+    <div class="info">
+      Kunde anlegen, automatischen Ordnerpfad generieren und danach direkt zu Angebot oder Rechnung springen.
+    </div>
 
-  <div class="col-3">
-    <label>Discount (%)</label>
-    <input id="discount" type="number" value="0">
-  </div>
+    <form id="form">
+      <div class="field field-full">
+        <label>Firmenname / Kunde*</label>
+        <input id="name" required placeholder="z. B. ACME GmbH">
+      </div>
+      <div class="field">
+        <label>Ansprechpartner</label>
+        <input id="contactPerson" placeholder="z. B. Max Mustermann">
+      </div>
+      <div class="field">
+        <label>Kundennummer</label>
+        <input id="customerNo" placeholder="z. B. 1001">
+      </div>
+      <div class="field field-full">
+        <label>Adresse</label>
+        <input id="address" placeholder="Straße, Hausnummer">
+      </div>
+      <div class="field">
+        <label>PLZ</label>
+        <input id="zip" placeholder="PLZ">
+      </div>
+      <div class="field">
+        <label>Ort</label>
+        <input id="city" placeholder="Ort">
+      </div>
+      <div class="field">
+        <label>Land</label>
+        <input id="country" placeholder="Land">
+      </div>
+      <div class="field">
+        <label>E-Mail</label>
+        <input id="email" type="email" placeholder="name@firma.tld">
+      </div>
+      <div class="field">
+        <label>Telefon</label>
+        <input id="phone" placeholder="+43 ...">
+      </div>
 
-  <div class="col-6">
-    <label>Notes</label>
-    <textarea id="notes">
-Small business regulation (Austrian UStG § 6(1)27, annual turnover ≤ 13,000 €) – no VAT charged.
-Please transfer the total amount within 14 days. Thank you for your order.
-    </textarea>
-  </div>
+      <div class="field field-full">
+        <label>Ordnerpfad (Vorschlag)</label>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <input id="folder" readonly style="flex:1; opacity:0.9;">
+          <button type="button" class="btn-secondary" onclick="copyFolder()">Kopieren</button>
+        </div>
+      </div>
 
-  <div class="col-12 actions">
-    <button onclick="render()">Update Preview</button>
-    <button class="secondary" onclick="window.print()">Save PDF</button>
-  </div>
+      <div class="field field-full">
+        <label>Notizen</label>
+        <textarea id="notes" placeholder="z. B. Projektart, Zahlungsziel, besondere Absprachen"></textarea>
+      </div>
 
-</div>
-</section>
+      <div class="actions">
+        <button type="submit" class="btn-primary">Kunde speichern</button>
+        <button type="button" class="btn-ghost" onclick="resetForm()">Reset</button>
+        <button type="button" class="btn-danger" onclick="deleteAll()" style="margin-left:auto;">Alle Kunden
+          löschen</button>
+      </div>
+      <div id="status" class="status"></div>
+    </form>
 
-<section class="preview" id="preview"></section>
+    <h2>Kundenübersicht</h2>
+    <div class="list-header">
+      <div id="summary" class="pill">0 Kunden</div>
+      <input id="filter" class="list-filter" placeholder="Suche (Name, Mail, Ort)" oninput="renderList()">
+    </div>
+    <div id="list" class="list"></div>
+  </main>
 
-</main>
+  <script>
+    // -------- Storage-Helfer --------
+    let editIndex = null;
 
-<script>
-// =========================================
-// PROJECT → INVOICE IMPORT
-// =========================================
+    function el(id) { return document.getElementById(id); }
 
-function getProjects() {
-  return JSON.parse(localStorage.getItem("bigProjects") || "[]");
-}
+    function getClients() {
+      return JSON.parse(localStorage.getItem("db_clients") || "[]");
+    }
+    function saveClients(list) {
+      localStorage.setItem("db_clients", JSON.stringify(list));
+    }
 
-function loadProjectByID(id) {
-  const list = getProjects();
-  return list.find(p => p.id === id);
-}
+    // NEU: automatische Kundennummer
+    function getNextCustomerNo() {
+      const list = getClients();
+      let max = 1000; // Start vor 1001
 
-const params = new URLSearchParams(window.location.search);
-const projectID = params.get("p");
+      list.forEach(c => {
+        const raw = (c.customerNo || "").toString();
+        const m = raw.match(/(\d+)/);   // erste Zahl aus der bestehenden Nummer
+        if (m) {
+          const n = parseInt(m[1], 10);
+          if (!isNaN(n) && n > max) max = n;
+        }
+      });
 
-// If invoice was triggered from project.html
-if (projectID) {
-  const P = loadProjectByID(projectID);
-  if (P) {
-    document.addEventListener("DOMContentLoaded", () => {
+      return String(max + 1);
+    }
 
-      document.getElementById("client").value = P.client || "";
-      document.getElementById("clientAddr").value = "";
-      document.getElementById("period").value = `${P.start || ""} – ${P.end || ""}`;
+    // Slug nur für Ordnername
+    function slugify(str) {
+      return (str || "")
+        .toString()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
 
-      document.getElementById("docno").value =
-        "PRJ-" + projectID.slice(1,8) + "-" + new Date().getTime();
+    function updateFolderSuggestion() {
+      const name = el("name").value.trim();
+      const no = el("customerNo").value.trim();
+      let base = slugify(name);
+      if (no) {
+        base += "_" + slugify(no);
+      }
+      if (!base) {
+        el("folder").value = "";
+        return;
+      }
+      el("folder").value = "kunden/" + base;
+    }
 
-      document.getElementById("date").value = new Date().toISOString().slice(0,10);
+    el("name").addEventListener("input", updateFolderSuggestion);
+    el("customerNo").addEventListener("input", updateFolderSuggestion);
 
-      document.querySelector("#items tbody").innerHTML = "";
+    function resetForm() {
+      el("form").reset();
+      editIndex = null;
+      el("folder").value = "";
+      el("status").textContent = "";
+      el("status").className = "status";
 
-      // Deposit
-      if (P.deposit && P.deposit > 0) {
-        addProjectRow(`Project deposit: ${P.name}`, 1, "pc", P.deposit);
+      // nach Reset sofort neue Kundennummer vorschlagen
+      el("customerNo").value = getNextCustomerNo();
+      updateFolderSuggestion();
+    }
+
+    function deleteAll() {
+      if (!confirm("Wirklich alle Kunden aus der lokalen Datenbank löschen?")) return;
+      localStorage.removeItem("db_clients");
+      renderList();
+      resetForm();
+    }
+
+    function copyFolder() {
+      const f = el("folder").value;
+      if (!f) return;
+      navigator.clipboard?.writeText(f).catch(() => { });
+      el("status").textContent = "Ordnerpfad kopiert: " + f;
+      el("status").className = "status status-ok";
+    }
+
+    // -------- Daten an andere Module übergeben --------
+    function setLastClient(c) {
+      localStorage.setItem("lastClientName", c.name || "");
+      localStorage.setItem("lastCustomerNo", c.customerNo || "");
+      localStorage.setItem("lastClientAddress", c.address || "");
+      localStorage.setItem("lastClientZip", c.zip || "");
+      localStorage.setItem("lastClientCity", c.city || "");
+      localStorage.setItem("lastClientCountry", c.country || "");
+    }
+
+    // -------- Liste rendern --------
+    function renderList() {
+      const listEl = el("list");
+      const filterVal = (el("filter").value || "").toLowerCase();
+      const data = getClients().sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+      el("summary").textContent = data.length + " Kunden";
+
+      if (data.length === 0) {
+        listEl.innerHTML = '<div class="empty">Noch keine Kunden erfasst.</div>';
+        return;
       }
 
-      // Remaining amount
-      const rest = (P.total || 0) - (P.deposit || 0);
-      if (rest > 0) {
-        addProjectRow(`Remaining payment: ${P.name}`, 1, "pc", rest);
+      listEl.innerHTML = "";
+      data.forEach((c) => {
+        const hay = (
+          (c.name || "") + " " +
+          (c.email || "") + " " +
+          (c.city || "") + " " +
+          (c.customerNo || "")
+        ).toLowerCase();
+        if (filterVal && !hay.includes(filterVal)) return;
+
+        const folder = c.folder || "";
+        const id = c.id || "";
+
+        const div = document.createElement("div");
+        div.className = "entry";
+
+        div.innerHTML = `
+      <div class="entry-main">
+        <div class="entry-title">${c.name || "(ohne Name)"}</div>
+        <div class="entry-meta">
+          KND: ${c.customerNo || "-"} · ID: ${id || "-"}<br>
+          ${c.address || ""} ${c.zip || ""} ${c.city || ""} ${c.country || ""}<br>
+          Mail: ${c.email || "-"} · Tel: ${c.phone || "-"}<br>
+          Ordner: ${folder || "-"}
+        </div>
+        ${c.notes ? `<div class="entry-notes">${c.notes}</div>` : ""}
+      </div>
+      <div class="entry-buttons">
+        <button class="btn-secondary" onclick="editClient('${id}')">Bearbeiten</button>
+        <button class="btn-secondary" onclick="openOffer('${id}')">Angebot</button>
+        <button class="btn-secondary" onclick="openInvoice('${id}')">Rechnung</button>
+        <button class="btn-danger" onclick="deleteClient('${id}')">Löschen</button>
+      </div>
+    `;
+        listEl.appendChild(div);
+      });
+
+      if (!listEl.innerHTML) {
+        listEl.innerHTML = '<div class="empty">Keine Kunden zum aktuellen Filter.</div>';
+      }
+    }
+
+    function getClientById(id) {
+      const data = getClients();
+      const index = data.findIndex(c => c.id === id);
+      if (index === -1) return { client: null, index: -1, data };
+      return { client: data[index], index, data };
+    }
+
+    function openOffer(id) {
+      const { client: c } = getClientById(id);
+      if (c) {
+        setLastClient(c);
+        window.open("angebot.html");
+      }
+    }
+
+    function openInvoice(id) {
+      const { client: c } = getClientById(id);
+      if (c) {
+        setLastClient(c);
+        window.open("rechnung.html");
+      }
+    }
+
+    function editClient(id) {
+      const { client: c, index } = getClientById(id);
+      if (!c) return;
+      editIndex = index;
+
+      el("name").value = c.name || "";
+      el("contactPerson").value = c.contactPerson || "";
+      el("customerNo").value = c.customerNo || "";
+      el("address").value = c.address || "";
+      el("zip").value = c.zip || "";
+      el("city").value = c.city || "";
+      el("country").value = c.country || "";
+      el("email").value = c.email || "";
+      el("phone").value = c.phone || "";
+      el("notes").value = c.notes || "";
+      el("folder").value = c.folder || "";
+
+      el("status").textContent = "Bearbeitungsmodus: " + (c.name || "");
+      el("status").className = "status status-warn";
+    }
+
+    function deleteClient(id) {
+      const { client: c, index, data } = getClientById(id);
+      if (!c) return;
+      if (!confirm(`Kunde „${c.name || "-"}“ wirklich löschen?`)) return;
+      data.splice(index, 1);
+      saveClients(data);
+      renderList();
+      resetForm();
+    }
+
+    // -------- Formular speichern --------
+    el("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = el("name").value.trim();
+      if (!name) {
+        el("status").textContent = "Name ist Pflicht.";
+        el("status").className = "status status-warn";
+        return;
       }
 
-      render();
+      const contactPerson = el("contactPerson").value.trim();
+      const customerNo = el("customerNo").value.trim();
+      const address = el("address").value.trim();
+      const zip = el("zip").value.trim();
+      const city = el("city").value.trim();
+      const country = el("country").value.trim();
+      const email = el("email").value.trim();
+      const phone = el("phone").value.trim();
+      const notes = el("notes").value.trim();
+      const folder = el("folder").value.trim() || null;
+
+      const data = getClients();
+      const now = new Date().toISOString();
+
+      const base = {
+        id: (editIndex === null && !data.length)
+          ? "C0001"
+          : (editIndex !== null && data[editIndex].id)
+            ? data[editIndex].id
+            : "C" + String(Math.floor(Math.random() * 99999)).padStart(5, "0"),
+        name,
+        contactPerson,
+        customerNo,
+        address,
+        zip,
+        city,
+        country,
+        email,
+        phone,
+        notes,
+        folder,
+        updated: now,
+        created: (editIndex !== null && data[editIndex].created) ? data[editIndex].created : now
+      };
+
+      if (editIndex === null) {
+        data.push(base);
+      } else {
+        data[editIndex] = base;
+      }
+
+      saveClients(data);
+      setLastClient(base);
+
+      el("status").textContent = "Kunde gespeichert: " + name + " – jetzt Angebot oder Rechnung erstellen?";
+      el("status").className = "status status-ok";
+
+      editIndex = null;
+      resetForm();
+      renderList();
     });
-  }
-}
 
-function addProjectRow(title, qty, unit, price) {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td contenteditable="true">${title}</td>
-    <td contenteditable="true">${qty}</td>
-    <td contenteditable="true">${unit}</td>
-    <td contenteditable="true">${price.toFixed(2)}</td>
-    <td class="net">${price.toFixed(2)}</td>
-    <td><button onclick="this.closest('tr').remove(); calc()">✕</button></td>
-  `;
-  tr.oninput = calc;
-  document.querySelector("#items tbody").appendChild(tr);
-  calc();
-}
+    // -------- Jarvis-Preload aus localStorage --------
+    function checkJarvisPreload() {
+      const preloadName = localStorage.getItem('tempClientName');
+      const preloadNo = localStorage.getItem('tempCustomerNo');
+      const preloadAddr = localStorage.getItem('tempAddress');
+      const preloadZip = localStorage.getItem('tempZip');
+      const preloadCity = localStorage.getItem('tempCity');
+      const preloadContact = localStorage.getItem('tempContact');
+      const preloadEmail = localStorage.getItem('tempEmail');
+      const preloadPhone = localStorage.getItem('tempPhone');
 
-// =========================================
-// ORIGINAL INVOICE ENGINE
-// =========================================
+      let preloaded = false;
 
-function money(x){
-  return (Math.round(Number(x||0)*100)/100).toFixed(2);
-}
+      if (preloadName && preloadName.trim()) {
+        el("name").value = preloadName.trim();
+        preloaded = true;
+      }
+      if (preloadNo && preloadNo.trim()) {
+        el("customerNo").value = preloadNo.trim();
+        preloaded = true;
+      }
+      if (preloadAddr && preloadAddr.trim()) {
+        el("address").value = preloadAddr.trim();
+        preloaded = true;
+      }
+      if (preloadZip && preloadZip.trim()) {
+        el("zip").value = preloadZip.trim();
+        preloaded = true;
+      }
+      if (preloadCity && preloadCity.trim()) {
+        el("city").value = preloadCity.trim();
+        preloaded = true;
+      }
 
-function slugify(str){
-  return (str || '')
-    .toLowerCase()
-    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
-    .replace(/[^a-z0-9]+/g,'-')
-    .replace(/^-+|-+$/g,'')
-    .slice(0,40);
-}
+      // NEU: Ansprechpartner / E-Mail / Telefon direkt richtig setzen
+      if (preloadContact && preloadContact.trim()) {
+        el("contactPerson").value = preloadContact.trim();
+        preloaded = true;
+      }
+      if (preloadEmail && preloadEmail.trim()) {
+        el("email").value = preloadEmail.trim();
+        preloaded = true;
+      }
+      if (preloadPhone && preloadPhone.trim()) {
+        el("phone").value = preloadPhone.trim();
+        preloaded = true;
+      }
 
-(function(){
-  const now = new Date();
-  document.getElementById("date").value = now.toISOString().slice(0,10);
-  document.getElementById("docno").value =
-    now.getFullYear() + "-" +
-    String(now.getMonth()+1).padStart(2,'0') +
-    String(now.getDate()).padStart(2,'0') + "-" +
-    String(now.getHours()).padStart(2,'0') +
-    String(now.getMinutes()).padStart(2,'0');
+      // temp-Keys am Ende aufräumen
+      [
+        'tempClientName',
+        'tempCustomerNo',
+        'tempAddress',
+        'tempZip',
+        'tempCity',
+        'tempContact',
+        'tempEmail',
+        'tempPhone'
+      ].forEach(k => localStorage.removeItem(k));
 
-  syncDueDate();
-  addRow();
-})();
+      if (preloaded) {
+        updateFolderSuggestion();
+        el("status").textContent = "Daten aus JARVIS-Befehl vorausgefüllt. Bitte prüfen und ergänzen.";
+        el("status").className = "status status-warn";
+        el("name").focus();
+      }
+    }
 
-document.getElementById('date').addEventListener('input', syncDueDate);
-document.getElementById('dueDays').addEventListener('input', syncDueDate);
+    // NEU: falls keine KDN aus Jarvis kommt → automatisch vergeben
+    function initAutoCustomerNo() {
+      const current = el("customerNo").value.trim();
+      if (!current) {
+        el("customerNo").value = getNextCustomerNo();
+        updateFolderSuggestion();
+      }
+    }
 
-function syncDueDate(){
-  const base = document.getElementById('date').value || new Date().toISOString().slice(0,10);
-  const days = parseInt(document.getElementById('dueDays').value) || 0;
-  const d = new Date(base);
-  d.setDate(d.getDate() + days);
-  document.getElementById('dueDate').value = d.toISOString().slice(0,10);
-}
-
-document.getElementById("add").onclick = addRow;
-document.getElementById("clear").onclick = () => {
-  document.querySelector("#items tbody").innerHTML = "";
-  addRow();
-};
-
-function addRow(){
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td contenteditable="true">AI Consulting Session</td>
-    <td contenteditable="true">1</td>
-    <td contenteditable="true">hour</td>
-    <td contenteditable="true">100.00</td>
-    <td class="net">100.00</td>
-    <td><button onclick="this.closest('tr').remove(); calc()">✕</button></td>`;
-  tr.oninput = calc;
-  document.querySelector("#items tbody").appendChild(tr);
-  calc();
-}
-
-function calc(){
-  let sum = 0;
-  document.querySelectorAll("#items tbody tr").forEach(tr=>{
-    const qty = parseFloat(tr.children[1].textContent.replace(',', '.')) || 0;
-    const price= parseFloat(tr.children[3].textContent.replace(',', '.')) || 0;
-    const net = qty * price;
-    tr.querySelector(".net").textContent = money(net);
-    sum += net;
-  });
-
-  const disc = parseFloat(document.getElementById('discount').value)||0;
-  const after = sum * (1 - disc/100);
-  const vat = parseFloat(document.getElementById('vat').value)||0;
-  const tax = after * vat/100;
-  const tot = after + tax;
-
-  calc.data = {sum, after, vat, tax, tot};
-}
-
-function render(){
-  calc();
-  const g = calc.data;
-  const e = id => document.getElementById(id).value;
-
-  const logo = `<img src="aichmayr_banner.jpeg" style="height:70px; margin-bottom:12px;">`;
-
-  const rows = [...document.querySelectorAll("#items tbody tr")].map(tr=>`
-      <tr>
-        <td>${tr.children[0].textContent}</td>
-        <td>${tr.children[1].textContent}</td>
-        <td>${tr.children[2].textContent}</td>
-        <td>${tr.children[3].textContent}</td>
-        <td>${tr.children[4].textContent}</td>
-      </tr>`).join("");
-
-  const vatText = (g.vat === 0)
-    ? "Please state the invoice number as payment reference,small business regulation (Austrian UStG § 6(1)27, annual turnover ≤ 13,000 €) – no VAT charged."
-    : g.vat + " % VAT";
-
-  const clientSlug = slugify(e("client") || e("clientAddr"));
-  const dateStr    = e("date") || new Date().toISOString().slice(0,10);
-  const folderName = clientSlug ? `clients/${clientSlug}` : 'clients/UNKNOWN';
-  const fileName   = `INV_${dateStr}_${clientSlug || 'client'}.pdf`;
-
-  document.getElementById("preview").innerHTML = `
-    <div style="display:flex; justify-content:space-between;">
-      <div>
-        ${logo}
-        <div style="font-weight:bold; font-size:18px;">${e("issuer")}</div>
-        <div>${e("issuerAddr")}</div>
-        <div>${e("contact")}</div>
-        <div>${e("web")}</div>
-        <div>${e("uid")}</div>
-        <div>${e("iban")}${e("bic") ? " · " + e("bic") : ""}</div>
-      </div>
-
-      <div style="text-align:right;">
-        <h2 style="margin:0;">${e("doctype")}</h2>
-        <b>Invoice No.:</b> ${e("docno")}<br>
-        <b>Date:</b> ${e("date")}<br>
-        <b>Due:</b> ${e("dueDate")} (in ${e("dueDays")} days)<br>
-        <b>Service period:</b> ${e("period")||"-"}
-      </div>
-    </div>
-
-    <hr>
-
-    <b>Billed to:</b><br>
-    ${e("client")}<br>
-    ${e("clientAddr")}<br><br>
-
-    <table>
-      <thead><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Price</th><th>Net</th></tr></thead>
-      <tbody>${rows}</tbody>
-      <tfoot>
-        <tr><td colspan="4" style="text-align:right">Subtotal</td><td>${money(g.sum)}</td></tr>
-        <tr><td colspan="4" style="text-align:right">Discount</td><td>– ${money(g.sum - g.after)}</td></tr>
-        <tr><td colspan="4" style="text-align:right">${vatText}</td><td>${money(g.tax)}</td></tr>
-        <tr><td colspan="4" style="text-align:right; font-weight:bold;">Total</td><td style="font-weight:bold;">${money(g.tot)}</td></tr>
-      </tfoot>
-    </table>
-
-    <p style="margin-top:20px; white-space:pre-wrap;">${e("notes")}</p>
-
-    <p style="margin-top:10px; font-size:11px; color:#666;">
-      This invoice was generated electronically and is valid without signature.
-    </p>
-  `;
-}
-
-render();
-</script>
-
+    // Initialisierung
+    checkJarvisPreload();
+    initAutoCustomerNo();
+    renderList();
+  </script>
 </body>
+
 </html>
