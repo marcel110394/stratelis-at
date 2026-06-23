@@ -255,10 +255,99 @@
       text-align: center;
       padding: 0 20px;
     }
+
+    /* LOGIN OVERLAY */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: radial-gradient(circle at 70% 20%, rgba(201,151,50,.18), transparent 35%), #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .login-card {
+      width: min(420px, 100%);
+      background: #0b0b0b;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    }
+
+    .login-card h1 {
+      margin: 0 0 8px;
+      letter-spacing: 3px;
+      font-size: 28px;
+    }
+
+    .login-card p {
+      color: #bbb;
+      line-height: 1.5;
+      margin: 0 0 20px;
+      font-size: 14px;
+    }
+
+    .login-card label {
+      display: block;
+      margin: 13px 0 6px;
+      color: #ddd;
+      font-size: 13px;
+    }
+
+    .login-card input {
+      width: 100%;
+      display: block;
+    }
+
+    .login-card button {
+      width: 100%;
+      margin-top: 16px;
+      background: linear-gradient(135deg, #b47b25, #f0c860);
+      color: #fff;
+    }
+
+    #loginError {
+      display: none;
+      color: #ff7a7a;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .voice-btn {
+      background: #111;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+
+    .voice-btn.active {
+      background: #fff;
+      color: #000;
+    }
+
   </style>
 </head>
 
 <body>
+
+  <div id="loginOverlay">
+    <div class="login-card">
+      <h1>STRATELIS</h1>
+      <p>Jarvis Core Login. Stimme, Serververbindung und Lernspeicher sind vorbereitet.</p>
+
+      <label>Benutzername</label>
+      <input id="loginUser" autocomplete="username" value="maic">
+
+      <label>Passwort</label>
+      <input id="loginPass" type="password" autocomplete="current-password" placeholder="Passwort">
+
+      <button onclick="login()">Einloggen</button>
+      <div id="loginError">Login fehlgeschlagen. Prüfe Benutzername und Passwort.</div>
+    </div>
+  </div>
+
 
   <div id="boot" class="bootScreen">
     JARVIS V4 · DARKOPS MOBILE<br>
@@ -287,6 +376,8 @@
     <button class="ops-nav-btn" onclick="location.href='kundenanlegen.html'">Kunden</button>
     <button class="ops-nav-btn" onclick="location.href='lagerbestand.html'">Lager</button>
     <button class="ops-nav-btn" onclick="location.href='search.html'">Suche</button>
+    <button class="ops-nav-btn" onclick="showMemory()">Memory</button>
+    <button class="ops-nav-btn" onclick="logout()">Logout</button>
   </nav>
 
 
@@ -295,7 +386,7 @@
 
   <div id="inputBox">
     <input id="input" placeholder="Awaiting next directive, Commander…">
-    <button onclick="toggleVoice()" id="voiceBtn">Voice On</button>
+    <button onclick="toggleVoice()" id="voiceBtn" class="voice-btn active">Voice On</button>
     <button onclick="send()">Send</button>
   </div>
 
@@ -371,7 +462,10 @@
       voiceEnabled = !voiceEnabled;
 
       const btn = document.getElementById("voiceBtn");
-      if (btn) btn.textContent = voiceEnabled ? "Voice On" : "Voice Off";
+      if (btn) {
+        btn.textContent = voiceEnabled ? "Voice On" : "Voice Off";
+        btn.classList.toggle("active", voiceEnabled);
+      }
 
       if (!voiceEnabled && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
@@ -482,6 +576,10 @@ AMOUNT: € ${amount.toFixed(2)}`
       logMission("KI_INTENT_RECEIVED", `Intent: ${intent}, Params: ${JSON.stringify(params)}`);
 
       switch (intent) {
+        case "server_reply":
+          ops(params.reply || "Jarvis Core returned an empty reply.");
+          break;
+
         case "open_module":
           // Übergabe von Daten an das Kundenanlege-Modul
           if (params.preload_name) localStorage.setItem("tempClientName", params.preload_name);
@@ -762,28 +860,132 @@ AMOUNT: ${mah.amount.toFixed(2)} ${mah.currency}`
       return { intent: "fallback_command", params: {} };
     }
 
-    /* ---------- SEND / GPT-Call ---------- */
-    const BACKEND_URL = "/api/jarvis";
+    /* ---------- LOGIN + SERVER API ---------- */
+    const API_BASE_URL = "https://api.stratelis.at/api";
+
+    function getToken() {
+      return localStorage.getItem("jarvisToken") || "";
+    }
+
+    function setToken(token) {
+      localStorage.setItem("jarvisToken", token);
+    }
+
+    function clearToken() {
+      localStorage.removeItem("jarvisToken");
+    }
+
+    async function apiCall(path, payload = null) {
+      const headers = { "Content-Type": "application/json" };
+      const token = getToken();
+
+      if (token) {
+        headers["Authorization"] = "Bearer " + token;
+      }
+
+      const options = {
+        method: payload ? "POST" : "GET",
+        headers
+      };
+
+      if (payload) {
+        options.body = JSON.stringify(payload);
+      }
+
+      const res = await fetch(API_BASE_URL + path, options);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "api_error");
+      }
+
+      return data;
+    }
+
+    async function login() {
+      const username = document.getElementById("loginUser").value.trim();
+      const password = document.getElementById("loginPass").value;
+      const err = document.getElementById("loginError");
+
+      err.style.display = "none";
+
+      try {
+        const data = await apiCall("/login", { username, password });
+        setToken(data.token);
+
+        document.getElementById("loginOverlay").style.display = "none";
+        ops("LOGIN SUCCESSFUL. JARVIS CORE ONLINE. Voice and memory ready.", 250);
+      } catch (e) {
+        err.style.display = "block";
+      }
+    }
+
+    function logout() {
+      clearToken();
+      document.getElementById("loginOverlay").style.display = "flex";
+      ops("LOGOUT COMPLETE.", 250);
+    }
+
+    async function checkSession() {
+      const token = getToken();
+      if (!token) return;
+
+      try {
+        await apiCall("/me");
+        document.getElementById("loginOverlay").style.display = "none";
+        ops("SESSION ACTIVE. JARVIS CORE READY.", 250);
+      } catch (e) {
+        clearToken();
+      }
+    }
+
+    async function showMemory() {
+      try {
+        const data = await apiCall("/memory");
+        const memory = data.memory || [];
+
+        if (!memory.length) {
+          ops("MEMORY EMPTY. Say: Merk dir Stratelis nennt öffentlich keine Preise.");
+          return;
+        }
+
+        const text = memory.slice(0, 10).map(x => "• " + (x.value || x)).join("\n");
+        ops("CURRENT MEMORY:\n" + text);
+      } catch (e) {
+        ops("MEMORY ERROR. Login may be expired.");
+      }
+    }
 
     async function routeCommand(txt) {
       try {
-        const res = await fetch(BACKEND_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: txt,
-            context: mem
-          })
+        const data = await apiCall("/jarvis", {
+          message: txt,
+          context: mem
         });
 
-        if (!res.ok) {
-          throw new Error("Backend error " + res.status);
+        if (data.reply) {
+          return {
+            intent: "server_reply",
+            params: { reply: data.reply }
+          };
         }
 
-        return await res.json();
+        return data;
       } catch (e) {
-        console.warn("Backend nicht erreichbar, fallback auf simulateKI:", e);
-        return simulateKI(txt);
+        console.warn("Backend nicht erreichbar oder Login abgelaufen:", e);
+
+        if (String(e.message).includes("login") || String(e.message).includes("token")) {
+          document.getElementById("loginOverlay").style.display = "flex";
+          return {
+            intent: "server_reply",
+            params: { reply: "LOGIN REQUIRED. Bitte erneut einloggen." }
+          };
+        }
+
+        return {
+          intent: "server_reply",
+          params: { reply: "SERVER ERROR. API nicht erreichbar oder HTTPS/CORS blockiert." }
+        };
       }
     }
 
@@ -807,6 +1009,8 @@ AMOUNT: ${mah.amount.toFixed(2)} ${mah.currency}`
         send();
       }
     });
+
+    checkSession();
 
     /* INITIAL BOOT MESSAGE */
     ops(
