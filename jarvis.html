@@ -379,7 +379,7 @@
   </div>
 
   <header>
-    <img src="assets/jarvis1.png" alt="Aichmayr Patch">
+    <img src="assets/jarvis1.png" alt="Aichmayr Patch" onerror="this.style.display='none';">
     <div class="unitBlock">
       <div class="unitMain">UNIT: JARVIS-V4 · CHANNEL: OPS-01</div>
       <div class="unitSub">Commander: Aichmayr <span id="statusLED"></span></div>
@@ -387,7 +387,7 @@
   </header>
 
   <nav class="ops-nav">
-    <button class="ops-nav-btn" onclick="location.href='index.html'">OPS Hub</button>
+    <button class="ops-nav-btn" onclick="location.href='ops.html'">OPS Hub</button>
     <button class="ops-nav-btn" onclick="location.href='dashboard.html'">Dashboard</button>
     <button class="ops-nav-btn" onclick="location.href='jarvis.html'">Jarvis</button>
     <button class="ops-nav-btn" onclick="location.href='qr-suite.html'">QR Suite</button>
@@ -418,7 +418,7 @@
 
   <script>
     /* ==========================================================
-       JARVIS V4.2 — KI-CORE ENGINE (MOBILE)
+       JARVIS V4.3 — DARKOPS + SERVER + GOOGLE + VOICE + MIC
        ========================================================== */
 
     const chat = document.getElementById("chat");
@@ -598,9 +598,6 @@ AMOUNT: € ${amount.toFixed(2)}`
 
     /* ---------- EXECUTION ENGINE (KI-Ausführung) ---------- */
     function executeAction(data) {
-      // Debug-Ausgabe im Chat – zeigt dir immer, was vom Backend kommt
-      log("DEBUG: " + JSON.stringify(data), "jarvis");
-
       const intent = data.intent || "fallback_command";
       const params = data.params || {};
 
@@ -1120,16 +1117,16 @@ AMOUNT: ${mah.amount.toFixed(2)} ${mah.currency}`
     /* INITIAL BOOT MESSAGE */
     ops(
       `UNIT: JARVIS-V4
-CORE: GPT-LINKED
+CORE: SERVER-LINKED
 STATUS: ONLINE
-MODE: ULTIMATE
+MODE: DARKOPS
 COMMANDER: AICHMAYR
 READY FOR NEXT DIRECTIVE`
     );
 
     setTimeout(() => {
       ops(
-        "HINT: z. B. 'Lege Kunde Trafik Steinweg KDN 4711 4050 Traun an', 'Umsatz 1500 für Tesla', 'Termin 21.11.2025 14:00 Meeting mit Kunde X', 'Buche 2 Stunden für ACME zum Satz 140' oder einfach 'Scanne'. Mit 🎙 Mic kannst du den Befehl sprechen."
+        "HINT: Sag oder schreibe z. B. 'Lies mir meine Nachrichten vor', 'Welche Termine habe ich heute?', 'Merk dir ...', 'Was weißt du?', 'Öffne Rechnung', 'Öffne Angebot' oder 'Scanne'. Mit 🎙 Mic kannst du den Befehl sprechen."
       );
     }, 2000);
   </script>
