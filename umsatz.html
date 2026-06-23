@@ -1,31 +1,274 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Umsatz · Stratelis</title>
-<style>
-:root{--bg:#050505;--card:#0e0e0e;--line:rgba(255,255,255,.12);--fg:#fff;--muted:#aaa;--gold:#d6a43a;--green:#00ff77}
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 70% 20%,rgba(214,164,58,.13),transparent 30%),var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;min-height:100dvh}
-header{padding:22px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px;background:#000}
-.brand{font-weight:900;letter-spacing:3px}.sub{color:var(--muted);font-size:13px;margin-top:4px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);margin-left:8px}
-main{max-width:1100px;margin:0 auto;padding:26px 18px}.hero{padding:30px;border:1px solid var(--line);border-radius:24px;background:rgba(10,10,10,.82);box-shadow:0 20px 60px rgba(0,0,0,.45)}
-h1{margin:0 0 12px;font-size:clamp(28px,5vw,54px);letter-spacing:-1px}.lead{color:#d0d0d0;line-height:1.6;max-width:760px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:22px}
-a.card,button.card{display:block;text-decoration:none;color:#fff;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;text-align:left;cursor:pointer;min-height:92px}
-a.card:hover,button.card:hover{border-color:rgba(214,164,58,.55);transform:translateY(-1px)}.card b{display:block;margin-bottom:6px;color:#fff}.card span{color:var(--muted);font-size:13px;line-height:1.4}
-.btn{display:inline-block;margin-top:18px;background:linear-gradient(135deg,#9e6b21,#e2b952);color:#050505;text-decoration:none;font-weight:900;padding:12px 18px;border-radius:999px}
-input,textarea,select{width:100%;padding:12px;background:#090909;border:1px solid var(--line);border-radius:12px;color:#fff;margin:7px 0 12px}
-label{font-size:13px;color:#ccc}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.row{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
-table{width:100%;border-collapse:collapse;margin-top:16px;background:#0a0a0a;border-radius:14px;overflow:hidden}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;font-size:14px}th{color:#d6a43a}
-.small{font-size:12px;color:#888;margin-top:18px}
-</style>
-</head>
-<body>
-<header>
-  <div><div class="brand">STRATELIS</div><div class="sub">OPS Hub <span class="dot"></span></div></div>
-  <div><a class="btn" href="jarvis.html">Jarvis öffnen</a></div>
-</header>
-<main><section class="hero"><h1>Umsatz</h1><p class="lead">Umsätze lokal erfassen. Diese Seite verhindert 404-Fehler und kann später erweitert werden.</p><a class="btn" href="index.html">Zurück zum OPS Hub</a> <a class="btn" href="jarvis.html">Jarvis</a></section></main>
 
-</body></html>
+<head>
+  <meta charset="UTF-8">
+  <title>Aichmayr Technology · Umsatz Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #0b1120;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 14px;
+      max-width: 800px;
+      margin: 20px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: white;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      background: #38bdf8;
+      cursor: pointer;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .sum {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .danger {
+      background: #ef4444;
+      color: #f9fafb;
+    }
+
+    .danger:hover {
+      background: #dc2626;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+        padding: 0;
+      }
+
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+        margin: 0;
+      }
+
+      h1 {
+        margin-top: 0;
+      }
+
+      /* Falls du Eingabekarte nicht im PDF willst, ausblenden: */
+      .card:first-of-type {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <h1>Aichmayr Technology · Umsatz Dashboard</h1>
+
+  <div class="card">
+    <h2>Neue Rechnung eintragen</h2>
+
+    <label>Datum</label>
+    <input type="date" id="date">
+
+    <label>Kunde</label>
+    <input type="text" id="client" placeholder="z.B. Musterfirma GmbH">
+
+    <label>Betrag (€)</label>
+    <input type="number" id="amount" step="0.01">
+
+    <button onclick="addRevenue()">Hinzufügen</button>
+  </div>
+
+  <div class="card">
+    <h2>Rechnungen</h2>
+
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Kunde</th>
+          <th>Betrag (€)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="sum" id="totalSum">Gesamt: €0.00</div>
+
+    <div class="actions-row">
+      <button onclick="exportPDF()">Als PDF exportieren</button>
+      <button class="danger" onclick="clearRevenues()">Umsätze löschen</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Monatsumsatz</h2>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <script>
+    let revenues = JSON.parse(localStorage.getItem("umsatzListe") || "[]");
+
+    function save() {
+      localStorage.setItem("umsatzListe", JSON.stringify(revenues));
+    }
+
+    function addRevenue() {
+      const date = document.getElementById("date").value;
+      const client = document.getElementById("client").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+
+      if (!date || !client || isNaN(amount)) {
+        alert("Bitte alle Felder ausfüllen.");
+        return;
+      }
+
+      revenues.push({ date, client, amount });
+      save();
+      render();
+
+      // Optional: Felder leeren
+      document.getElementById("amount").value = "";
+      // client/Datum bleiben stehen, praktisch für mehrere gleiche Kunden
+    }
+
+    function render() {
+      // Tabelle
+      const tbody = document.querySelector("#table tbody");
+      tbody.innerHTML = "";
+
+      let sum = 0;
+
+      revenues.forEach(r => {
+        tbody.innerHTML += `
+      <tr>
+        <td>${r.date}</td>
+        <td>${r.client}</td>
+        <td>€${r.amount.toFixed(2)}</td>
+      </tr>
+    `;
+        sum += r.amount;
+      });
+
+      document.getElementById("totalSum").textContent = "Gesamt: €" + sum.toFixed(2);
+
+      // Monatsaggregation
+      const byMonth = {};
+      revenues.forEach(r => {
+        const month = r.date ? r.date.slice(0, 7) : "unbekannt"; // YYYY-MM
+        byMonth[month] = (byMonth[month] || 0) + r.amount;
+      });
+
+      const labels = Object.keys(byMonth).sort();
+      const values = labels.map(m => byMonth[m]);
+
+      // Diagramm
+      if (window.chart) window.chart.destroy();
+
+      window.chart = new Chart(document.getElementById("chart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Umsatz (€ pro Monat)",
+            data: values,
+            backgroundColor: "#38bdf8"
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // PDF-Export (Browser-Druckdialog)
+    function exportPDF() {
+      window.print();
+    }
+
+    // Alle Umsätze löschen
+    function clearRevenues() {
+      if (!confirm("Alle Umsätze wirklich dauerhaft löschen?")) return;
+      revenues = [];
+      save();
+      render();
+    }
+
+    render();
+  </script>
+
+</body>
+
+</html>
